@@ -1,19 +1,32 @@
-import React from 'react'
-
-
-//Este componente debera ser estilado como "dark" o "light" dependiendo del theme del Context
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const Detail = () => {
- 
-  // Consumiendo el parametro dinamico de la URL deberan hacer un fetch a un user en especifico
+  const { id } = useParams();
+  const [dentist, setDentist] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(`https://jsonplaceholder.typicode.com/users/${id}`)
+      .then((response) => {
+        console.log(response.data);
+        setDentist(response.data);
+      })
+      .catch((error) => console.error(error));
+  }, [id]);
+
+  if (!dentist) {
+    return <div>No dentist selected, please go back...</div>;
+  }
 
   return (
-    <>
-      <h1>Detail Dentist id </h1>
-      {/* aqui deberan renderizar la informacion en detalle de un user en especifico */}
-      {/* Deberan mostrar el name - email - phone - website por cada user en especifico */}
-    </>
-  )
-}
+    <div>
+      <h2>{dentist.name}</h2>
+      <p>{dentist.username}</p>
+      <p>ID: {dentist.id}</p>
+    </div>
+  );
+};
 
-export default Detail
+export default Detail;
